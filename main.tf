@@ -38,7 +38,7 @@ data "aws_vpc" "default" {
 resource "aws_instance" "web" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
-  aws_security_group = aws_security_group.allow_http
+  security_groups = [aws_security_group.allow_http]
   user_data = <<EOF
   #!/bin/bash
 
