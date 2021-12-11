@@ -30,7 +30,8 @@ data "aws_ami" "ubuntu" {
 
 data "aws_vpc" "default" {
     filter {
-        name = "default"
+        name = "name"
+        values = "default"
     }
 }
 
