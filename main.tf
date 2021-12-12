@@ -43,7 +43,7 @@ data "aws_security_groups" "default" {
 resource "aws_instance" "web" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
-  security_groups = [aws_security_group.allow_http.name]
+  security_groups = [aws_security_group.default.name]
   user_data = <<EOF
   #!/bin/bash
 
