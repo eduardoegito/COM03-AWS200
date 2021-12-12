@@ -38,13 +38,14 @@ resource "aws_instance" "web" {
   instance_type = "t2.micro"
   security_groups = [aws_security_group.allow_http_ssh.name]
   key_name = aws_key_pair.deployer.key_name
-  user_data = <<EOF
-  #!/bin/bash
-
-sudo apt-get install -y  nginx
-echo "<header>Hello World</header><p> It is working, dude!</p>" > /usr/share/nginx/html/index.php
-service nginx start
-EOF
+  user_data = <<-EOF
+                 #!/bin/bash
+                 sudo apt-get update
+                 sudo apt-get install -y nginx
+                 sudo echo "<header>Hello World</header><p> It is working, dude!</p>" > /usr/share/nginx/html/index.php
+                 sudo systemctl start nginx
+                 sudo systemctl enable nginx
+              EOF
 
   tags = {
     Name = "COM03-AWS100"
