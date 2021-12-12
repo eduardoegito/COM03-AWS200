@@ -33,17 +33,14 @@ data "aws_vpc" "default" {
   default = true
 }
 
-data "aws_security_groups" "default" {
-    filter {
-        name = "group-name"
-        values = ["default"]
-    }
+data "aws_security_group" "default" {
+    name = "default"
 }
 
 resource "aws_instance" "web" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
-  security_groups = [data.aws_security_groups.default.group-name]
+  security_groups = [data.aws_security_group.default.name]
   user_data = <<EOF
   #!/bin/bash
 
