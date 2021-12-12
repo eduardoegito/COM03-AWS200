@@ -33,10 +33,6 @@ data "aws_vpc" "default" {
   default = true
 }
 
-data "aws_security_group" "default" {
-    name = "default"
-}
-
 resource "aws_instance" "web" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
