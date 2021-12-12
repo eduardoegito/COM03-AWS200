@@ -42,7 +42,7 @@ resource "aws_instance" "web" {
                  #!/bin/bash
                  sudo apt-get update
                  sudo apt-get install -y nginx
-                 sudo echo "<header>Hello World</header><p> It is working, dude!</p><p>CaduEgito finished the COM03-AWS100 Project!" > /usr/share/nginx/html/index.html
+                 sudo echo "<header>Hello World</header><p> It is working, dude!</p><p>CaduEgito finished the COM03-AWS100 Project!" > /var/www/html/index.nginx-debian.html
                  sudo systemctl start nginx
                  sudo systemctl enable nginx
               EOF
