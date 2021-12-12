@@ -41,10 +41,9 @@ resource "aws_instance" "web" {
   user_data = <<EOF
   #!/bin/bash
 
-apt-get install -y  nginx php70-fpm
+sudo apt-get install -y  nginx
 echo "<header>Hello World</header><p> It is working, dude!</p>" > /usr/share/nginx/html/index.php
-for i in php-fpm nginx; do service $i start; done
-
+service nginx start
 EOF
 
   tags = {
@@ -89,6 +88,6 @@ resource "aws_security_group" "allow_http_ssh" {
   }
 
   tags = {
-    Name = "allow_http"
+    Name = "allow_http_ssh"
   }
 }
