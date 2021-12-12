@@ -33,9 +33,9 @@ data "aws_vpc" "default" {
   default = true
 }
 
-data "aws_security_group" "default" {
+data "aws_security_groups" "default" {
     filter {
-        name = "name"
+        name = "group-name"
         values = ["default"]
     }
 }
