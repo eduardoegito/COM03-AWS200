@@ -29,7 +29,7 @@ data "aws_ami" "ubuntu" {
 }
 
 data "aws_vpc" "default" {
-<<<<<<< HEAD
+
   default = true
 }
 
