@@ -1,3 +1,4 @@
+# Configuring providers and backend
 terraform {
   required_providers {
     aws = {
@@ -5,9 +6,15 @@ terraform {
       version = "~> 3.0"
     }
   }
+
+  backend "s3" {
+    bucket = "100daysofcloud-eduardoegito"
+    key    = "terraform.tfstate"
+    region = "us-east-1"
+  }
 }
 
-# Configure the AWS Provider
+# Configuring the AWS Provider
 provider "aws" {
   region = "us-east-1"
 }
@@ -33,22 +40,40 @@ data "aws_vpc" "default" {
   default = true
 }
 
-resource "aws_instance" "web" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = "t2.micro"
-  security_groups = [aws_security_group.allow_http_ssh.name]
-  key_name = aws_key_pair.deployer.key_name
-  user_data = <<-EOF
-                 #!/bin/bash
-                 sudo apt-get update
-                 sudo apt-get install -y nginx
-                 sudo echo "<header>Hello World</header><p> It is working, dude!</p><p>CaduEgito finished the COM03-AWS100 Project!" > /var/www/html/index.nginx-debian.html
-                 sudo systemctl start nginx
-                 sudo systemctl enable nginx
-              EOF
+resource "aws_autoscaling_group" "asg" {
+  availability_zones = ["us-east-1a"]
+  desired_capacity   = 3
+  max_size           = 5
+  min_size           = 3
+
+  launch_template {
+    id = aws_launch_template.web.id
+    #    version = "$Latest"
+  }
+}
+
+data "template_file" "user_data_web" {
+  template = <<EOF
+#!/bin/bash -xe
+
+sudo apt-get update
+sudo apt-get install -y nginx
+sudo echo "<header>Hello World</header><p> It is working, dude!</p><p>CaduEgito finished the COM03-AWS100 Project!" > /var/www/html/index.nginx-debian.html
+sudo systemctl start nginx
+sudo systemctl enable nginx
+EOF
+}
+
+resource "aws_launch_template" "web" {
+
+  image_id               = data.aws_ami.ubuntu.id
+  instance_type          = "t2.micro"
+  vpc_security_group_ids = [aws_security_group.allow_http_ssh.id]
+  key_name               = aws_key_pair.deployer.key_name
+  user_data              = "${base64encode(data.template_file.user_data_web.rendered)}"
 
   tags = {
-    Name = "COM03-AWS100"
+    Name = "COM03-AWS200"
   }
 }
 
